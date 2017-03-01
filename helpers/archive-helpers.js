@@ -36,6 +36,13 @@ exports.readListOfUrls = function(callback) {
 };
 
 exports.isUrlInList = function(url, callback) {
+  exports.readListOfUrls(function(urls) {
+    if (urls.includes(url)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
+  });
 };
 
 exports.addUrlToList = function(url, callback) {

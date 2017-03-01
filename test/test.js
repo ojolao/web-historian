@@ -89,7 +89,7 @@ describe('archive helpers', function() {
     });
   });
 
-  xdescribe('#isUrlInList', function () {
+  describe('#isUrlInList', function () {
     it('should check if a url is in the list', function (done) {
       var urlArray = ['example1.com', 'example2.com'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
