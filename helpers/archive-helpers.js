@@ -37,7 +37,7 @@ exports.readListOfUrls = function(callback) {
 
 exports.isUrlInList = function(url, callback) {
   exports.readListOfUrls(function(urls) {
-    if (urls.includes(url)) {
+    if (urls.indexOf(url) !== -1) {
       callback(true);
     } else {
       callback(false);
