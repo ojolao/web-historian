@@ -46,9 +46,11 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.writeFile(exports.paths.list, url, (error) => {
-    if (error) { throw error; }
-    callback();
+  fs.open(exports.paths.list, 'w', (error, fd) => {    
+    fs.write(fd, url, 'utf8', (error) => {
+      if (error) { throw error; }
+      callback();
+    });
   });
 };
 
