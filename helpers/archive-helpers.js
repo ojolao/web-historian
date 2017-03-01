@@ -55,6 +55,13 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
+  fs.stat(exports.paths.archivedSites + '/' + url, (error, stats) => {
+    if (error) {
+      callback(false);
+    } else {
+      callback(true);
+    }
+  });
 };
 
 exports.downloadUrls = function(urls) {

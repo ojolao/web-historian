@@ -123,7 +123,7 @@ describe('archive helpers', function() {
     });
   });
 
-  xdescribe('#isUrlArchived', function () {
+  describe('#isUrlArchived', function () {
     it('should check if a url is archived', function (done) {
       fs.writeFileSync(archive.paths.archivedSites + '/www.example.com', 'blah blah');
 
