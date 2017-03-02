@@ -15,8 +15,8 @@ archive.initialize({
 
 var request = supertest.agent(server);
 
-xdescribe('server', function() {
-  describe('GET /', function () {
+describe('server', function() {
+  xdescribe('GET /', function () {
     it('should return the content of index.html', function (done) {
       // just assume that if it contains an <input> tag its index.html
       request
@@ -25,8 +25,8 @@ xdescribe('server', function() {
     });
   });
 
-  xdescribe('archived websites', function () {
-    describe('GET', function () {
+  describe('archived websites', function () {
+    xdescribe('GET', function () {
       it('should return the content of a website from the archive', function (done) {
         var fixtureName = 'www.google.com';
         var fixturePath = archive.paths.archivedSites + '/' + fixtureName;

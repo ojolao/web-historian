@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
+var http = require('http');
 
 exports.headers = {
   'access-control-allow-origin': '*',
@@ -19,3 +20,30 @@ exports.serveAssets = function(res, asset, callback) {
 
 
 // As you progress, keep thinking about what helper functions you can put here!
+
+exports.getRequest = function(options) {
+  http.get(options, function(res) {
+    const statusCode = res.statusCode;
+
+    var error;
+    if (statusCode !== 200) {
+      error = new Error(`Request Failed.\n` + `Status Code: ${statusCode}`);
+    }
+    if (error) {
+      console.log(error.message);
+      // consume response data to free up memory
+      res.resume();
+      return;
+    }
+
+    res.setEncoding('utf8');
+    var rawData = '';
+    res.on('data', (chunk) => rawData += chunk);
+    res.on('end', () => {
+      return rawData;
+    });
+
+  }).on('error', function(e) {
+    console.log('Got error: ' + e.message);
+  });
+};
