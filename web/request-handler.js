@@ -22,9 +22,31 @@ exports.handleRequest = function (req, res) {
     if (req.url === '/') {
       fs.readFile(path.join(__dirname, './public/index.html'), 'utf8', (error, data) => {
         if (error) { throw error; }
+        statusCode = 200;
+        res.writeHead(statusCode, httpHelpers.headers);
         res.end(data);
       });
+    } else {
+      archive.isUrlArchived(req.url.slice(1), function(bool) {
+        if (bool) {
+          // console.log('path', path.join(__dirname, '../test/testdata/sites', req.url));
+          fs.readFile(path.join(__dirname, '../test/testdata/sites', req.url), 'utf8', (error, data) => {
+            if (error) { throw error; }
+            statusCode = 200;
+            res.writeHead(statusCode, httpHelpers.headers);
+            res.end(data);
+          });
+          console.log('found');
+        } else {
+          statusCode = 404;
+          res.writeHead(statusCode, httpHelpers.headers);
+          res.end('');
+          console.log('not found');
+        }
+      });
+      // res.end();
     }
+
   } else if (req.method === 'POST') {
 
 

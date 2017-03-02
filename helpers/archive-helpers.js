@@ -67,7 +67,7 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urls) {
-  console.log('urls', urls);
+  // console.log('urls', urls);
   urls.forEach(function(url) { 
     var options = {
       host: url,
