@@ -52,7 +52,7 @@ describe('server', function() {
       });
     });
 
-    xdescribe('POST', function () {
+    describe('POST', function () {
       it('should append submitted sites to \'sites.txt\'', function(done) {
         var url = 'www.example.com';
 

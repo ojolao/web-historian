@@ -36,28 +36,36 @@ exports.handleRequest = function (req, res) {
             res.writeHead(statusCode, httpHelpers.headers);
             res.end(data);
           });
-          console.log('found');
+          // console.log('found');
         } else {
           statusCode = 404;
           res.writeHead(statusCode, httpHelpers.headers);
           res.end('');
-          console.log('not found');
+          // console.log('not found');
         }
       });
-      // res.end();
     }
 
   } else if (req.method === 'POST') {
-
-
+    var body = '';
+    req.on('data', function (data) {
+      body += data;
+    });
+    req.on('end', function () {
+      archive.addUrlToList(body.slice(4) + '\n', function() {
+        statusCode = 302;
+        res.writeHead(statusCode, httpHelpers.headers);
+        res.end('');
+      });
+    });
   } else if (req.method === 'OPTIONS') {
-
-  } else if (req.method === 'PUT') {
-
-  } else if (req.method === 'DELETE') {
-    
+    statusCode = 200;
+    res.writeHead(statusCode, httpHelpers.headers);
+    res.end('');
   } else {
     statusCode = 400;
+    res.writeHead(statusCode, httpHelpers.headers);
+    res.end('');
   }
     
 
