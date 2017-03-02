@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -65,4 +66,38 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urls) {
+  console.log('urls', urls);
+  urls.forEach(function(url) { 
+    var options = {
+      host: url,
+    };
+
+    http.get(options, function(res) {
+      const statusCode = res.statusCode;
+
+      var error;
+      if (statusCode !== 200) {
+        error = new Error(`Request Failed.\n` +
+                          `Status Code: ${statusCode}`);
+      }
+      if (error) {
+        console.log(error.message);
+        // consume response data to free up memory
+        res.resume();
+        return;
+      }
+
+      res.setEncoding('utf8');
+      var rawData = '';
+      res.on('data', (chunk) => rawData += chunk);
+      res.on('end', () => {
+        fs.writeFile(exports.paths.archivedSites + '/' + url, rawData, (err) => {
+          if (err) { throw err; }
+        });
+      });
+
+    }).on('error', function(e) {
+      console.log('Got error: ' + e.message);
+    });
+  });
 };
