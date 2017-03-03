@@ -30,9 +30,6 @@ exports.initialize = function(pathsObj) {
 exports.readListOfUrls = function(callback) {
   fs.readFile(exports.paths.list, 'utf8', (error, data) => {
     if (error) { throw error; }
-    // fs.writeFile('./consoleLog.txt', data, (error) => {
-    //   if (error) throw error;
-    // });
     callback(data.split('\n'));
   });
 };
@@ -48,16 +45,10 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  // exports.isUrlInList(url, function(bool) {
-    // if (!bool) {
-      // fs.open(exports.paths.list, 'a', (error, fd) => {    
   fs.appendFile(exports.paths.list, url + '\n', 'utf8', (error) => {
     if (error) { throw error; }
     callback();
   });
-      // });
-    // }
-  // });
 };
 
 exports.isUrlArchived = function(url, callback) {
@@ -71,7 +62,6 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urls) {
-  // console.log('urls', urls);
   urls.forEach(function(url) { 
     var options = {
       host: url,
@@ -86,7 +76,6 @@ exports.downloadUrls = function(urls) {
       }
       if (error) {
         console.log(error.message);
-        // consume response data to free up memory
         res.resume();
       }
       res.setEncoding('utf8');

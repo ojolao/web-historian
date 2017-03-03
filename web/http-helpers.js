@@ -18,31 +18,28 @@ exports.serveAssets = function(res, asset, callback) {
 };
 
 
+// exports.getRequest = function(options) {
+//   http.get(options, function(res) {
+//     const statusCode = res.statusCode;
 
-// As you progress, keep thinking about what helper functions you can put here!
+//     var error;
+//     if (statusCode !== 200) {
+//       error = new Error(`Request Failed.\n` + `Status Code: ${statusCode}`);
+//     }
+//     if (error) {
+//       console.log(error.message);
+//       // consume response data to free up memory
+//       res.resume();
+//       return;
+//     }
+//     res.setEncoding('utf8');
+//     var rawData = '';
+//     res.on('data', (chunk) => rawData += chunk);
+//     res.on('end', () => {
+//       return rawData;
+//     });
 
-exports.getRequest = function(options) {
-  http.get(options, function(res) {
-    const statusCode = res.statusCode;
-
-    var error;
-    if (statusCode !== 200) {
-      error = new Error(`Request Failed.\n` + `Status Code: ${statusCode}`);
-    }
-    if (error) {
-      console.log(error.message);
-      // consume response data to free up memory
-      res.resume();
-      return;
-    }
-    res.setEncoding('utf8');
-    var rawData = '';
-    res.on('data', (chunk) => rawData += chunk);
-    res.on('end', () => {
-      return rawData;
-    });
-
-  }).on('error', function(e) {
-    console.log('Got error: ' + e.message);
-  });
-};
+//   }).on('error', function(e) {
+//     console.log('Got error: ' + e.message);
+//   });
+// };
