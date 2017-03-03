@@ -48,12 +48,16 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.open(exports.paths.list, 'w', (error, fd) => {    
-    fs.write(fd, url, 'utf8', (error) => {
-      if (error) { throw error; }
-      callback();
-    });
+  // exports.isUrlInList(url, function(bool) {
+    // if (!bool) {
+      // fs.open(exports.paths.list, 'a', (error, fd) => {    
+  fs.appendFile(exports.paths.list, url + '\n', 'utf8', (error) => {
+    if (error) { throw error; }
+    callback();
   });
+      // });
+    // }
+  // });
 };
 
 exports.isUrlArchived = function(url, callback) {
@@ -73,10 +77,40 @@ exports.downloadUrls = function(urls) {
       host: url,
     };
 
-    var responseData = httpHelpers.getRequest(options);
+    http.get(options, function(res) {
+      const statusCode = res.statusCode;
 
-    fs.writeFile(exports.paths.archivedSites + '/' + url, responseData, (err) => {
-      if (err) { throw err; }
+      var error;
+      if (statusCode !== 200) {
+        error = new Error(`Request Failed.\n` + `Status Code: ${statusCode}`);
+      }
+      if (error) {
+        console.log(error.message);
+        // consume response data to free up memory
+        res.resume();
+      }
+      res.setEncoding('utf8');
+      var rawData = '';
+      res.on('data', (chunk) => rawData += chunk);
+      res.on('end', () => {
+        fs.open(exports.paths.archivedSites + '/' + url, 'w', function(error, fd) { 
+          if (error) { throw error; }
+          fs.writeFile(exports.paths.archivedSites + '/' + url, rawData, (err) => {
+            if (err) { throw err; }
+          });
+        });
+      });
+
+    }).on('error', function(e) {
+      console.log('Got error: ' + e.message);
     });
+
+    fs.open(exports.paths.list, 'w', function(error, fd) { 
+      if (error) { throw error; }
+      fs.writeFile(exports.paths.list, '', (err) => {
+        if (err) { throw err; }
+      });
+    });
+
   });
 };

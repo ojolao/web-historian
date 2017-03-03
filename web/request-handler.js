@@ -30,7 +30,8 @@ exports.handleRequest = function (req, res) {
       archive.isUrlArchived(req.url.slice(1), function(bool) {
         if (bool) {
           // console.log('path', path.join(__dirname, '../test/testdata/sites', req.url));
-          fs.readFile(path.join(__dirname, '../test/testdata/sites', req.url), 'utf8', (error, data) => {
+          // CHANGE FILE PATH
+          fs.readFile(archive.paths.archivedSites + req.url, 'utf8', (error, data) => {
             if (error) { throw error; }
             statusCode = 200;
             res.writeHead(statusCode, httpHelpers.headers);
@@ -52,11 +53,44 @@ exports.handleRequest = function (req, res) {
       body += data;
     });
     req.on('end', function () {
-      archive.addUrlToList(body.slice(4) + '\n', function() {
-        statusCode = 302;
-        res.writeHead(statusCode, httpHelpers.headers);
-        res.end('');
+      var url = body.slice(4);
+      // check if we have the file
+      archive.isUrlArchived(url, function(bool) {
+        // if we have file
+        if (bool) {
+          // send back the file
+          // CHANGE FILE PATH
+          fs.readFile(archive.paths.archivedSites + '/' + url, 'utf8', (error, data) => {
+            if (error) { throw error; }
+            statusCode = 200;
+            res.writeHead(statusCode, httpHelpers.headers);
+            res.end(data);
+          });
+        // else if we don't have file
+        } else {
+          // check if it's on the list
+          archive.isUrlInList(url, function(bool2) {
+            // if it's not on the list
+            if (!bool2) {
+              // add it to the list
+              archive.addUrlToList(url, function() {
+                console.log('Added ' + url + ' to the list');
+              });
+            }
+          });
+          // send back loading
+          fs.readFile(path.join(__dirname, './public/loading.html'), 'utf8', (error, data) => {
+            if (error) { console.log('error', error); }
+            console.log('data', data);
+            statusCode = 200;
+            res.writeHead(statusCode, httpHelpers.headers);
+            res.end(data);
+          });
+        }
       });
+
+
+
     });
   } else if (req.method === 'OPTIONS') {
     statusCode = 200;

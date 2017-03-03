@@ -35,7 +35,6 @@ exports.getRequest = function(options) {
       res.resume();
       return;
     }
-
     res.setEncoding('utf8');
     var rawData = '';
     res.on('data', (chunk) => rawData += chunk);
